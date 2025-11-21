@@ -2,7 +2,7 @@
 This script in Haskell is a very simple command-line calculator that can take an expression as IO string input and evaluate it.
 
 > Example
-> ```haskell
+> ```
 > Enter your calculation to compute:
 > >>> 3 + 4 * 5
 > 23
