@@ -68,14 +68,14 @@ operation_to_function Multiplication = (*)
 operation_to_function Division       = div
 
 calculate :: Integral a => BinaryTree a -> a
-calculate (Leaf num) = num
+calculate (Leaf num)      = num
 calculate (Branch op l r) = operation_to_function op (calculate l) (calculate r)
 
 main :: IO ()
-main = do
-  putStrLn "Enter your calculation to compute:"
-  input <- getLine
+main =
+  putStrLn "Enter your calculation to compute:" >>
+  getLine >>= \input ->
   let clean_input = remove_spaces input
-  let parsed_input = parse_string clean_input
-  let binary_tree = to_binary_tree $ fromJust parsed_input
+      parsed_input = parse_string clean_input
+      binary_tree = to_binary_tree $ fromJust parsed_input in
   print $ calculate binary_tree
