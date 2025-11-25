@@ -1,6 +1,7 @@
 import Data.Char
-import Data.Maybe
-import Data.Either
+import Data.Maybe ( fromJust, isJust )
+import Data.Either ( fromLeft, fromRight )
+import Control.Monad ( guard )
 
 -- Challenge: No use of `read`.
 
@@ -33,7 +34,7 @@ map_and_drop_while map_func condition (x:xs)
   where trans_x = map_func x
 
 get_number :: String -> Maybe (Integer, String)
-get_number str = if not . null $ list then Just (left, right) else Nothing
+get_number str = (left, right) <$ guard (not . null $ list)
   where
     list = map fromJust . map_and_take_while char_to_int isJust $ str
     left = toInteger $ foldl (\acc x -> x + acc * 10) 0 list
