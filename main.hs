@@ -49,9 +49,13 @@ get_operation  _  = Nothing
 parse_string :: String -> Maybe [Either Integer Operation]
 parse_string [] = Just []
 parse_string (c:cs)
-  | Just operation <- get_operation c = parse_string cs >>= \rest -> pure (Right operation : rest)
-  | Just number <- get_number (c:cs)  = parse_string (snd number) >>= \rest -> pure (Left (fst number) : rest)
-  | otherwise                         = Nothing
+  | Just operation <- get_operation c =
+      parse_string cs >>= \rest ->
+      pure (Right operation : rest)
+  | Just number <- get_number (c:cs)  =
+      parse_string (snd number) >>= \rest ->
+      pure (Left (fst number) : rest)
+  | otherwise = Nothing
 
 to_binary_tree :: [Either Integer Operation] -> BinaryTree Integer
 to_binary_tree [num] = Leaf $ fromLeft 0 num
