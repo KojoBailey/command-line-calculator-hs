@@ -75,7 +75,8 @@ main :: IO ()
 main =
   putStrLn "Enter your calculation to compute:" >>
   getLine >>= \input ->
-  let clean_input = remove_spaces input
-      parsed_input = parse_string clean_input
-      binary_tree = to_binary_tree $ fromJust parsed_input in
-  print $ calculate binary_tree
+  let
+    clean_input = remove_spaces input
+    parsed_input = parse_string clean_input
+    binary_tree = to_binary_tree $ fromJust parsed_input
+  in print $ calculate binary_tree
