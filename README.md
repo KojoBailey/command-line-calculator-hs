@@ -59,3 +59,6 @@ Parentheses are essential for clear expressions.
 **Expected output:** `27` (3 * 9)
 
 **Current output:** `*** Exception: Maybe.fromJust: Nothing`
+
+### Strict evaluation
+Not the most important, but this project uses a lot of recursion which can be suboptimal for memory. It'd be better to refactor the recursive functions to use tail recursion and strict evaluation (looking at the `$!` operator) if possible.
