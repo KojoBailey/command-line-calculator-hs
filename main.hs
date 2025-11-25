@@ -15,9 +15,7 @@ remove_spaces :: String -> String
 remove_spaces = filter (/= ' ')
 
 char_to_int :: Char -> Maybe Int
-char_to_int c 
-  | c `elem` ['0'..'9'] = Just $ ord c - ord '0'
-  | otherwise           = Nothing
+char_to_int c = ord c - ord '0' <$ guard (c `elem` ['0'..'9'])
 
 map_and_take_while :: (a -> b) -> (b -> Bool) -> [a] -> [b]
 map_and_take_while _ _ [] = []
