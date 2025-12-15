@@ -11,68 +11,68 @@ data Operation = Subtraction | Addition | Division | Multiplication
 data BinaryTree a = Branch Operation (BinaryTree a) (BinaryTree a) | Leaf a
   deriving (Show)
 
-char_to_int :: Char -> Maybe Int
-char_to_int c = ord c - ord '0' <$ guard (c `elem` ['0'..'9'])
+charToInt :: Char -> Maybe Int
+charToInt c = ord c - ord '0' <$ guard (c `elem` ['0'..'9'])
 
-map_and_take_while :: (a -> b) -> (b -> Bool) -> [a] -> [b]
-map_and_take_while _ _ [] = []
-map_and_take_while map_func condition (x:xs)
-  | condition trans_x = trans_x : map_and_take_while map_func condition xs
+mapAndTakeWhile :: (a -> b) -> (b -> Bool) -> [a] -> [b]
+mapAndTakeWhile _ _ [] = []
+mapAndTakeWhile mapFunc condition (x:xs)
+  | condition transX = transX : mapAndTakeWhile mapFunc condition xs
   | otherwise         = []
-  where trans_x = map_func x
+  where transX = mapFunc x
 
-map_and_drop_while :: (a -> b) -> (b -> Bool) -> [a] -> [a]
-map_and_drop_while _ _ [] = []
-map_and_drop_while map_func condition (x:xs)
-  | condition trans_x = map_and_drop_while map_func condition xs
+mapAndDropWhile :: (a -> b) -> (b -> Bool) -> [a] -> [a]
+mapAndDropWhile _ _ [] = []
+mapAndDropWhile mapFunc condition (x:xs)
+  | condition transX = mapAndDropWhile mapFunc condition xs
   | otherwise         = x:xs
-  where trans_x = map_func x
+  where transX = mapFunc x
 
-get_number :: String -> Maybe (Integer, String)
-get_number str = (left, right) <$ guard (not . null $ list)
+getNumber :: String -> Maybe (Integer, String)
+getNumber str = (left, right) <$ guard (not . null $ list)
   where
-    list = map fromJust . map_and_take_while char_to_int isJust $ str
+    list = map fromJust . mapAndTakeWhile charToInt isJust $ str
     left = toInteger $ foldl (\acc x -> x + acc * 10) 0 list
-    right = map_and_drop_while char_to_int isJust str
+    right = mapAndDropWhile charToInt isJust str
 
-get_operation :: Char -> Maybe Operation
-get_operation '+' = Just Addition
-get_operation '-' = Just Subtraction
-get_operation '*' = Just Multiplication
-get_operation '/' = Just Division
-get_operation  _  = Nothing
+getOperation :: Char -> Maybe Operation
+getOperation '+' = Just Addition
+getOperation '-' = Just Subtraction
+getOperation '*' = Just Multiplication
+getOperation '/' = Just Division
+getOperation  _  = Nothing
 
-parse_string :: String -> Maybe [Either Integer Operation]
-parse_string [] = Just []
-parse_string (c:cs)
-  | Just operation <- get_operation c =
-      parse_string cs >>= \rest ->
+parseString :: String -> Maybe [Either Integer Operation]
+parseString [] = Just []
+parseString (c:cs)
+  | Just operation <- getOperation c =
+      parseString cs >>= \rest ->
       pure (Right operation : rest)
-  | Just number <- get_number (c:cs)  =
-      parse_string (snd number) >>= \rest ->
+  | Just number <- getNumber (c:cs)  =
+      parseString (snd number) >>= \rest ->
       pure (Left (fst number) : rest)
   | otherwise = Nothing
 
-to_binary_tree :: [Either Integer Operation] -> BinaryTree Integer
-to_binary_tree [num] = Leaf $ fromLeft 0 num
-to_binary_tree (num:op:rest) = Branch (fromRight Addition op) (Leaf $ fromLeft 0 num) (to_binary_tree rest)
+toBinaryTree :: [Either Integer Operation] -> BinaryTree Integer
+toBinaryTree [num] = Leaf $ fromLeft 0 num
+toBinaryTree (num:op:rest) = Branch (fromRight Addition op) (Leaf $ fromLeft 0 num) (toBinaryTree rest)
 
-operation_to_function :: Integral a => Operation -> (a -> a -> a)
-operation_to_function Addition       = (+)
-operation_to_function Subtraction    = (-)
-operation_to_function Multiplication = (*)
-operation_to_function Division       = div
+operationToFunction :: Integral a => Operation -> (a -> a -> a)
+operationToFunction Addition       = (+)
+operationToFunction Subtraction    = (-)
+operationToFunction Multiplication = (*)
+operationToFunction Division       = div
 
 calculate :: Integral a => BinaryTree a -> a
 calculate (Leaf num)      = num
-calculate (Branch op l r) = operation_to_function op (calculate l) (calculate r)
+calculate (Branch op l r) = operationToFunction op (calculate l) (calculate r)
 
 main :: IO ()
 main =
   putStrLn "Enter your calculation to compute:" >>
   getLine >>= \input ->
   let
-    clean_input = filter (/= ' ') input
-    parsed_input = parse_string clean_input
-    binary_tree = to_binary_tree $ fromJust parsed_input
-  in print $ calculate binary_tree
+    cleanInput = filter (/= ' ') input
+    parsedInput = parseString cleanInput
+    binaryTree = toBinaryTree $ fromJust parsedInput
+  in print $ calculate binaryTree
