@@ -68,11 +68,11 @@ calculate (Leaf num)      = num
 calculate (Branch op l r) = operationToFunction op (calculate l) (calculate r)
 
 main :: IO ()
-main =
-  putStrLn "Enter your calculation to compute:" >>
-  getLine >>= \input ->
+main = do
+  putStrLn "Enter your calculation to compute:"
+  input <- getLine
   let
     cleanInput = filter (/= ' ') input
     parsedInput = parseString cleanInput
     binaryTree = toBinaryTree $ fromJust parsedInput
-  in print $ calculate binaryTree
+  print $ calculate binaryTree
