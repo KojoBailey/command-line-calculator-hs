@@ -11,6 +11,16 @@ data Operation = Subtraction | Addition | Division | Multiplication
 data BinaryTree a = Branch Operation (BinaryTree a) (BinaryTree a) | Leaf a
   deriving (Show)
 
+main :: IO ()
+main = do
+  putStrLn "Enter your calculation to compute:"
+  input <- getLine
+  let
+    cleanInput = filter (/= ' ') input
+    parsedInput = parseString cleanInput
+    binaryTree = toBinaryTree $ fromJust parsedInput
+  print $ calculate binaryTree
+
 charToInt :: Char -> Maybe Int
 charToInt c = ord c - ord '0' <$ guard (c `elem` ['0'..'9'])
 
@@ -66,13 +76,3 @@ operationToFunction Division       = div
 calculate :: Integral a => BinaryTree a -> a
 calculate (Leaf num)      = num
 calculate (Branch op l r) = operationToFunction op (calculate l) (calculate r)
-
-main :: IO ()
-main = do
-  putStrLn "Enter your calculation to compute:"
-  input <- getLine
-  let
-    cleanInput = filter (/= ' ') input
-    parsedInput = parseString cleanInput
-    binaryTree = toBinaryTree $ fromJust parsedInput
-  print $ calculate binaryTree
