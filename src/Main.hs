@@ -3,6 +3,7 @@ import Parser
 import Evaluator
 
 import System.Environment
+import System.IO
 import Control.Monad ( when )
 import Control.Monad.Except ( ExceptT, runExceptT, liftEither )
 import Control.Monad.IO.Class (liftIO)
@@ -19,6 +20,7 @@ main = do
 mainMain :: Bool -> IO ()
 mainMain showVerbose = do
   putStr ">>> "
+  hFlush stdout
   input <- getLine
   when (input /= ":q") $ do
     runExceptT (step showVerbose input) >>= either printErr pure
