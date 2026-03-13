@@ -1,8 +1,6 @@
 # Command-Line Calculator - Haskell
 This is a very simple command-line calculator that evaluates expressions, programmed in Haskell.
 
-**Current status:** The tokeniser is complete, and still need to implement the rest.
-
 ## Usage
 By running the compiled app or calling `main`:
 
