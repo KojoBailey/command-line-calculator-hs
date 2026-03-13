@@ -22,7 +22,6 @@ data Token
   deriving (Show, Eq)
 
 -- Throws on failure.
--- Consider result types down the line.
 tokenize :: String -> Either String [Token]
 tokenize [] = Right [TEOF]
 tokenize (' ' : cs) = tokenize cs
