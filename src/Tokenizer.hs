@@ -3,10 +3,10 @@ module Tokenizer (Operator(..), Token(..), tokenize) where
 import Data.Char ( isDigit )
 
 data Operator
-  = Add
-  | Subtract
-  | Multiply
-  | Divide
+  = Plus
+  | Minus
+  | Asterisk
+  | Slash
   deriving (Show, Eq)
 
 data Token
@@ -21,10 +21,10 @@ tokenize [] = Right []
 tokenize (' ' : cs) = tokenize cs
 tokenize ('(' : cs) = tokenMap TParenthesisOpen cs
 tokenize (')' : cs) = tokenMap TParenthesisClose cs
-tokenize ('+' : cs) = tokenMap (TOperator Add) cs
-tokenize ('-' : cs) = tokenMap (TOperator Subtract) cs
-tokenize ('*' : cs) = tokenMap (TOperator Multiply) cs
-tokenize ('/' : cs) = tokenMap (TOperator Divide) cs
+tokenize ('+' : cs) = tokenMap (TOperator Plus) cs
+tokenize ('-' : cs) = tokenMap (TOperator Minus) cs
+tokenize ('*' : cs) = tokenMap (TOperator Asterisk) cs
+tokenize ('/' : cs) = tokenMap (TOperator Slash) cs
 tokenize (c:cs)
   | isDigit c = let (num, remaining) = parseNum (c:cs)
                 in tokenMap (TNumber num) remaining
