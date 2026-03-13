@@ -2,43 +2,39 @@ import Tokenizer
 import Parser
 import Evaluator
 
+import Control.Monad ( when )
+import Control.Monad.Except ( ExceptT, runExceptT, liftEither )
+import Control.Monad.IO.Class (liftIO)
+
+type App a = ExceptT String IO a
+
 main :: IO ()
 main = do
   putStr ">>> "
   input <- getLine
-  if input == ":q"
-    then return ()
+  when (input /= ":q") $ do
+    runExceptT (step input) >>= either printErr return
+    main
 
-    else do
-      case tokenize input of
-        Left err  -> do
-          printErr err
-          main
+step :: String -> App ()
+step input = do
+    tokens <- liftEither (tokenize input)
+    liftIO $ do
+      putStrLn "== Tokens =="
+      print tokens
 
-        Right tokens -> do
-          putStrLn "== Tokens =="
-          print tokens
-          case parse tokens of
-            Left err  -> do
-              printErr err
-              main
+    ast <- liftEither (parse tokens)
+    liftIO $ do
+      newLine
+      putStrLn "== Abstract Syntax Tree =="
+      print ast
 
-            Right ast -> do
-              newLine
-              putStrLn "== Abstract Syntax Tree =="
-              print ast
-              case evaluate ast of
-                Left err  -> do
-                  printErr err
-                  main
-
-                Right res -> do
-                  newLine
-                  putStrLn "== Evaluation =="
-                  print res
-                  newLine
-                  main
--- end main
+    result <- liftEither (evaluate ast)
+    liftIO $ do
+      newLine
+      putStrLn "== Evaluation =="
+      print result
+      newLine
 
 newLine :: IO ()
 newLine = putStrLn ""
