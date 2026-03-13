@@ -1,37 +1,33 @@
-module Tokenizer (HighOp(..), LowOp(..), Token(..), tokenize) where
+module Tokenizer (Operator(..), Token(..), tokenize) where
 
 import Data.Char ( isDigit )
 
-data HighOp -- Higher presedence than LowOp
-  = Multiply
+data Operator
+  = Add
+  | Subtract
+  | Multiply
   | Divide
   deriving (Show, Eq)
 
-data LowOp -- Lower presedence than HighOp
-  = Add
-  | Subtract
-  deriving (Show, Eq)
-
 data Token
-  = TNum Double -- Easier to just evaluate one number type
-  | TLowOp LowOp
-  | THighOp HighOp
-  | TParenOpen
-  | TParenClose
+  = TNumber Double -- Easier to just evaluate one number type
+  | TOperator Operator
+  | TParenthesisOpen
+  | TParenthesisClose
   deriving (Show, Eq)
 
 tokenize :: String -> Either String [Token]
 tokenize [] = Right []
 tokenize (' ' : cs) = tokenize cs
-tokenize ('(' : cs) = tokenMap TParenClose cs
-tokenize (')' : cs) = tokenMap TParenOpen cs
-tokenize ('+' : cs) = tokenMap (TLowOp Add) cs
-tokenize ('-' : cs) = tokenMap (TLowOp Subtract) cs
-tokenize ('*' : cs) = tokenMap (THighOp Multiply) cs
-tokenize ('/' : cs) = tokenMap (THighOp Divide) cs
+tokenize ('(' : cs) = tokenMap TParenthesisOpen cs
+tokenize (')' : cs) = tokenMap TParenthesisClose cs
+tokenize ('+' : cs) = tokenMap (TOperator Add) cs
+tokenize ('-' : cs) = tokenMap (TOperator Subtract) cs
+tokenize ('*' : cs) = tokenMap (TOperator Multiply) cs
+tokenize ('/' : cs) = tokenMap (TOperator Divide) cs
 tokenize (c:cs)
   | isDigit c = let (num, remaining) = parseNum (c:cs)
-                in tokenMap (TNum num) remaining
+                in tokenMap (TNumber num) remaining
   | otherwise = Left $ "Invalid token: " ++ [c]
 
 tokenMap :: Token -> String -> Either String [Token]
