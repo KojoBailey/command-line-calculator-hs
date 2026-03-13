@@ -18,11 +18,10 @@ data Token
   | THighOp HighOp
   | TParenOpen
   | TParenClose
-  | TEOF -- End of file
   deriving (Show, Eq)
 
 tokenize :: String -> Either String [Token]
-tokenize [] = Right [TEOF]
+tokenize [] = Right []
 tokenize (' ' : cs) = tokenize cs
 tokenize ('(' : cs) = tokenMap TParenClose cs
 tokenize (')' : cs) = tokenMap TParenOpen cs
