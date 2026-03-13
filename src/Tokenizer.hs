@@ -21,7 +21,6 @@ data Token
   | TEOF -- End of file
   deriving (Show, Eq)
 
--- Throws on failure.
 tokenize :: String -> Either String [Token]
 tokenize [] = Right [TEOF]
 tokenize (' ' : cs) = tokenize cs
