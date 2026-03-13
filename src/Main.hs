@@ -4,7 +4,7 @@ main :: IO ()
 main = do
   putStr ">>> "
   input <- getLine
-  if input == "q"
+  if input == ":q"
     then return ()
     else do
       print $ tokenize input
